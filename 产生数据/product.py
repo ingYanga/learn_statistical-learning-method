@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 
-class GneraterData:
+class GeneraterData:
     def __init__(self):
         pass
 
@@ -34,11 +34,13 @@ class GneraterData:
                 X = np.concatenate((X, _x), axis=0)
                 y = np.concatenate((y, _y), axis=1)
 
+
         return X, y
 
 
+
 def main():
-    gd = GneraterData()
+    gd = GeneraterData()
     X, y = gd.features_with_label(features_num=4, sample_num=10, labels=2)
     # print(y)
     # print(X)
