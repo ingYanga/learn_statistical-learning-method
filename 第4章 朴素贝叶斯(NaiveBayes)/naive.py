@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from DrawTools import DrawTools
+
 
 # data
 def create_data():
@@ -37,11 +39,10 @@ class NaiveBayes:
     def gaussian_probability(self, x, mean, stdev):
         exponent = math.exp(-(math.pow(x-mean, 2)/(2*math.pow(stdev, 2))))
         return (1 / (math.sqrt(2*math.pi) * stdev)) * exponent
-
+++
     def summarize(self, train):
         s = [(self.mean(i), self.stdev(i)) for i in zip(*train)]
         return s
-
 
     def fit(self, X, y):
         """
@@ -52,13 +53,14 @@ class NaiveBayes:
         : para y 是标签 [0, 1]
         """
         labels = list(set(y))
-        data = {label:[] for label in labels}
+        data = {label: [] for label in labels}
 
         # 根据标签分开数据
         for x, label in zip(X, y):
             data[label].append(x)
         # 分类后，计算每个类中的每个特征的平均数和标准差
-        self.model = {label:self.summarize(value) for label, value in data.items() }
+        self.model = {label: self.summarize(value)
+                      for label, value in data.items()}
 
         return '训练完毕'
 
@@ -72,14 +74,16 @@ class NaiveBayes:
             for i in range(len(input_data)):
                 _mean, _stdev = value[i]
                 # 贝叶斯公式分子的左部分
-                probabilities[label] *= self.gaussian_probability(input_data[i], _mean, _stdev)
+                probabilities[label] *= self.gaussian_probability(
+                    input_data[i], _mean, _stdev)
         return probabilities
 
     def predict(self, input_data):
-        label = sorted(self.cal_probabilities(input_data).items(), key=lambda x : x[-1])[-1][0]
+        label = sorted(self.cal_probabilities(
+            input_data).items(), key=lambda x: x[-1])[-1][0]
         return label
 
-        
+
 def main():
     X, y = create_data()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
@@ -88,7 +92,17 @@ def main():
     model = NaiveBayes()
     print(model.fit(X_train, y_train))
 
-    print(model.predict([10,  3.2,  1.3,  0.2]))
+    # print(model.model.items())
+    # model = model.model
+    # mean, stdev = model[0][1]
+    mean, stdev = (0.5, 1)
+
+    def func(x):
+        exponent = math.exp(-(math.pow(x-mean, 2)/(2*math.pow(stdev, 2))))
+        return (1 / (math.sqrt(2*math.pi) * stdev)) * exponent
+
+    dt = DrawTools()
+    dt.draw_line_with_func(func=func, step=0.01, x_range=(0, 1))
 
 
 if __name__ == "__main__":

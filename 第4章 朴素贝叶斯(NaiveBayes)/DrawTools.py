@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 class DrawTools:
     def __init__(self):
         pass
+
     def draw_line_with_points(self, X, y):
         """
         X [1, 2, 3]
@@ -26,19 +27,24 @@ class DrawTools:
         y = []
         for i in X:
             y.append(func(i))
-        
+
         self.draw_line_with_points(X, y)
-        
+    
+    def draw_gs(self, func,  mu, sigma, step=0.1, x_range=(1, 50)):
+        pass
+
 
 def main():
     dt = DrawTools()
     # X = [1, 2, 3]
     # y = [1, 2, 3]
     # dt.draw_line_with_points(X, y)
+
     def func(x):
-        y = x**2 * (1-x)**3 
+        y = x**2 * (1-x)**3
         return y
     dt.draw_line_with_func(func, step=0.01, x_range=(0, 1))
+
 
 if __name__ == "__main__":
     main()
