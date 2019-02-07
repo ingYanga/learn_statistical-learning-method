@@ -157,7 +157,7 @@ def main():
     data_df = pd.DataFrame(datasets, columns=labels)
     dt = DTree()
     tree = dt.fit(data_df)
-    print(tree)
+    # 进行减枝
 
 
 
