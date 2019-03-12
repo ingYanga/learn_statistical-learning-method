@@ -85,6 +85,7 @@ class MaxEntropy():
                     ss += self.w[self.XY2w[(x, y)]]
             pyx = math.exp(ss)/Z
             result[y] = pyx
+        # print('result', result)
         return result
     
     def compute_ep(self, idx):
@@ -100,7 +101,7 @@ class MaxEntropy():
         ep /= self.N
         return ep
 
-    def train(self, iterations=5000):
+    def train(self, iterations=1000):
         for j in range(iterations):
             self.lastw = self.w[:]
             for i in range(self.n):
@@ -132,7 +133,7 @@ dataset = [['no', 'sunny', 'hot', 'high', 'FALSE'],
 
 def main():
     maxent = MaxEntropy()
-    x = ['overcast', 'mild', 'high', 'FALSE']
+    x = ['rainy', 'mild', 'high', 'TRUE']
     maxent.load_data(dataset)
     maxent.train()
     # print('maxent', maxent.n)

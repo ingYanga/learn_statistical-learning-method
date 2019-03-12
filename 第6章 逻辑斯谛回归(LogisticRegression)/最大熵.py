@@ -121,7 +121,7 @@ dataset = [['no', 'sunny', 'hot', 'high', 'FALSE'],
            ['no', 'rainy', 'mild', 'high', 'TRUE']]
 
 maxent = MaxEntropy()
-x = ['overcast', 'mild', 'high', 'FALSE']
+x = ['rainy', 'mild', 'high', 'TRUE']
 maxent.loadData(dataset)
 print('maxent._n', maxent._numXY)
 maxent.train()
