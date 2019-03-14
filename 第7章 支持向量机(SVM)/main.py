@@ -44,9 +44,6 @@ class SVM(object):
     def g(self, idx):
         r = self.b
         for j in range(self.samples_len):
-            # print('r', idx, ' plt.scatter(X[:50, 0], X[:50, 1], label='0')
-    plt.scatter(X[50:, 0], X[50:, 1], label='1')
-    plt.legend()', j)
             r += self.alpha[j]*self.y[j]*self.kernel(self.X[idx], self.X[j])
         return r
 
@@ -64,11 +61,11 @@ class SVM(object):
         else:
             return t <= 1
 
-    def init_args(self, kernel_type='linear', c=1.0):
+    def init_args(self, kernel_type='linear', c=0.0001):
         self.samples_len, self.features_len = self.X.shape
         self.b = 0.0
         self.kernel_type = kernel_type 
-        self.alpha = np.ones(self.samples_len)
+        self.alpha = np.zeros(self.samples_len)
         self.E = [self.compute_E(i) for i in range(self.samples_len)]
         # 松弛变量
         self.C = c
@@ -108,7 +105,7 @@ class SVM(object):
     def train(self, max_iters=100):
         for t in range(max_iters):
             i1, i2 = self.init_alpha()
-
+            print("i1, i2", i1, i2)
             # 计算边界 由 old 值计算
             if self.y[i1] == self.y[i2]:
                 L = max(0, self.alpha[i1]+self.alpha[i2] - self.C)
@@ -123,9 +120,8 @@ class SVM(object):
             eta = self.kernel(self.X[i1], self.X[i1]) + self.kernel(
                 self.X[i2], self.X[i2]) - 2*self.kernel(self.X[i1], self.X[i2])
 
-            # if eta == 0:
-            #     print('为啥要这样')
-            #     continue
+            if eta <= 0:
+                continue
 
             # 计算新的 alpha2
             alpha2_new_unc = self.alpha[i2] + self.y[i2] * (E1 - E2) / eta
@@ -199,7 +195,7 @@ def main():
 
     score = svm.score(X_test, y_test)
 
-    # print('score', score)
+    print('score', score)
     a1, a2 = svm.weight()
     b = svm.b
     x_min = min(svm.X, key=lambda x: x[0])[0]
