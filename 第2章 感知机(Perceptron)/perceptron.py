@@ -32,7 +32,11 @@ def generator_data():
 
 
 class Perceptron(object):
-    def __init__(self, data):
+    def load_data(self, data):
+        self.data = data
+
+    def init_args(self):
+        data = self.data
         self.x = data['x']
         self.y = data['y']
         self.w = np.ones(2)
@@ -42,9 +46,6 @@ class Perceptron(object):
     def update(self, x, y):
         self.w += self.lr * np.dot(y, x)
         self.b += self.lr * y
-
-    def update1(self, x, y):
-        return self.lr * np.dot(y, x), self.lr * y
     
     def judge(self, x, y):
         w = self.w
@@ -68,21 +69,17 @@ class Perceptron(object):
             if not wrong_sample_num:
                 wrong_sample = False
 
+        return self.w, self.b
+
             
     
 
 
 def main():
     data = generator_data()
-    p = Perceptron(data)
+    p = Perceptron()
+    p.load_data(data)
     p.train()
-    w = p.w
-    b = p.b
-    print(w, b)
-    # plt.plot([0, 130], [325, 0])
-    # plt.show()
-    # testx1 = 0
-    # testx2 = 
 
 
 if __name__ == "__main__":
