@@ -1,5 +1,15 @@
 # 第2章 感知机
 
+## 介绍
+
++ 方便阅读
+`dual_perception.ipynb`
+`perception.ipynb`
+
++ 方便复制粘贴
+`dual_perception.py`
+`perceptron.py`
+
 ## 完成这一章所写的博客
 
 + [原始感知机](https://www.jianshu.com/p/64130fdfcd27)
