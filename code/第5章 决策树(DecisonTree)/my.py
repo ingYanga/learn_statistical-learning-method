@@ -17,7 +17,6 @@ class DNode:
         """
         
         self.root = root
-        self.feature = feature
         self.feature_name = feature_name
         self.label = label
         self.tree = {}
@@ -112,7 +111,7 @@ class DTree:
 
         # 构建子集
         node_tree = DNode(root=False, 
-                        feature_name=max_feature_name, feature=max_feature)
+                        feature_name=max_feature_name)
 
         # 将那些数据按 max_feature_name 分开
         feature_list = train_data[max_feature_name].value_counts().index

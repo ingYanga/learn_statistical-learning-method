@@ -22,14 +22,6 @@ class DNode:
         self.tree = {}
         self.data = data
 
-    # def __repr__(self):
-    #     # 这个函数非常 python
-    #     if self.root:
-    #         result = f'这是叶子节点 数据长度是{len(self.data)}'
-    #     else:
-    #         result = f'这是分类节点 data 是 {self.data}'
-    #     return result + '{}'.format(self.tree)
-
     def add_node(self, val, node):
         self.tree[val] = node
     
@@ -265,9 +257,6 @@ def main():
     root_node = dt.fit(data_df)
     dt.root_node = root_node
     ls = dt.all_leaves()
-    # print(dt.cal_loss())
-    # print('ls', len(ls))
-    # print(tree)
     # 进行减枝
     dt.cut(alpha=0.5)
 
