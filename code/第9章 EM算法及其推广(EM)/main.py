@@ -1,7 +1,6 @@
 import numpy as np
 import random
 import math
-import time
 
 
 def create_data(mu0, sigma0, mu1, sigma1, alpha0, alpha1):
@@ -18,7 +17,7 @@ def create_data(mu0, sigma0, mu1, sigma1, alpha0, alpha1):
     '''
     #定义数据集长度为1000
     length = 1000
-    
+
     #初始化第一个高斯分布，生成数据，数据长度为length * alpha系数，以此来
     #满足alpha的作用
     data0 = np.random.normal(mu0, sigma0, int(length * alpha0))
@@ -32,9 +31,6 @@ def create_data(mu0, sigma0, mu1, sigma1, alpha0, alpha1):
     dataSet.extend(data0)
     #添加第二个数据集的数据
     dataSet.extend(data1)
-    # 对总的数据集进行打乱（其实不打乱也没事，只不过打乱一下直观上让人感觉已经混合了
-    # 读者可以将下面这句话屏蔽以后看看效果是否有差别）
-    random.shuffle(dataSet)
 
     #返回伪造好的数据集
     return dataSet
@@ -60,9 +56,10 @@ def cal_gauss(dataSetArr, mu, sigmod):
     #返回结果
     return result
 
+
 class EM_Gauss:
     def load_data(self, data):
-        # 保存所有数据
+        # 保存所有数据，转换成 np.array
         self.data = np.array(data).reshape(1, len(data))
 
     def init_args(self, all_args):
@@ -83,58 +80,66 @@ class EM_Gauss:
         for k in range(self.K):
             str_k = str(k)
             key = 'gauss' + str_k
-            t_d[key] = cal_gauss(self.data, self.all_args["mu"+str_k], self.all_args['sigma'+str_k])
+            # 计算所有的 y 的高斯值
+            # 只需将第 k 个的均值和方差传入就行
+            # 计算 算法 9.2 (2) 的分子
+            t_d[key] = cal_gauss(
+                self.data, self.all_args["mu"+str_k], self.all_args['sigma'+str_k])
             t_d[key] = self.all_args["alpha"+str_k] * t_d[key]
+            # 计算分母, 这是两个同等长度的 np.array() 相加，等价于对应元素相加
             _sum += t_d[key]
 
         all_gamma = {}
         for k in range(self.K):
+            # 计算 k 层的所有 gamma
             str_k = str(k)
             key1 = 'gamma' + str_k
             key2 = 'gauss' + str_k
             all_gamma[key1] = t_d[key2] / _sum
-        
+
         return all_gamma
 
-
     # 步骤 M 更新参数
+
     def M(self, all_gamma):
         """
         更新模型参数
         """
+        # 书上公式 算法 9.2 (3)
         for k in range(self.K):
             str_k = str(k)
             sum_gamma = np.sum(all_gamma['gamma'+str_k])
 
-            self.all_args['mu'+str_k] = np.sum(all_gamma['gamma'+str_k] * self.data) / sum_gamma
+            self.all_args['mu' +
+                          str_k] = np.sum(all_gamma['gamma'+str_k] * self.data) / sum_gamma
             self.all_args['sigma'+str_k] = np.sqrt(
-                np.sum(all_gamma['gamma'+str_k] * np.square(self.data - self.all_args['mu'+str_k])) / sum_gamma
+                np.sum(all_gamma['gamma'+str_k] * np.square(self.data -
+                                                            self.all_args['mu'+str_k])) / sum_gamma
             )
             self.all_args['alpha' + str_k] = sum_gamma / self.N
 
-
     def train(self, max_iters=100):
-        
-
         for t in range(max_iters):
-            print('t', t)
             # 计算 E 步骤
             all_gamma = self.E()
-
             # 计算 M 步骤
             self.M(all_gamma)
 
+        print('train done!')
         return self.all_args
 
+
 def main():
+
     # 加载自己伪造的高斯数据
     # 假设伪造的数据只有两个高斯混合
     # mu0 sigma0 alpha0 是第一个高斯
     # mu1 sigma1 alpha1 是第二个高斯
     # alpha0 alpha1 是比例系数 相加为 1
     mu0, sigma0, alpha0 = -2.0, 0.5, 0.3
-    mu1, sigma1, alpha1 = 0.5, 1.0, 0.7 
+    mu1, sigma1, alpha1 = 0.5, 1.0, 0.7
     data = create_data(mu0, sigma0, mu1, sigma1, alpha0, alpha1)
+
 
     # 创建 EM_Gauss 类
     em = EM_Gauss()
@@ -144,18 +149,30 @@ def main():
     # 在 M 步中有三个参数要更新
     # 现在定义每个参数的初始值
 
+    raw_args = {
+        'mu0': mu0,
+        'sigma0': sigma0,
+        'alpha0': alpha0,
+        'mu1': mu1,
+        'sigma1': sigma1,
+        'alpha1': alpha1
+    }
+
     all_args = {
         'mu0': 0.,
         'sigma0': 1.0,
         'alpha0': 0.5,
         'mu1': 1.0,
         'sigma1': 1.0,
-        'alpha1': 0.5 
+        'alpha1': 0.5
     }
     em.init_args(all_args)
     all_args = em.train(max_iters=500)
 
     print(all_args)
+
+    print(raw_args)
+
 
 if __name__ == "__main__":
     main()
