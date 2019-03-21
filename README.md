@@ -62,4 +62,8 @@
 
 扫码我们做朋友吧！
 
+<center>
+
 ![wx](./images/wx.png)
+
+</center> 
