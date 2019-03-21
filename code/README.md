@@ -1,15 +1,35 @@
-# 《统计学习方法》
+# 学习《统计学习方法》
 
-## 简介
+## 目录
 
-把《统计学习方法》上的算法，按章节全部实现一遍，并写博客。
+第2章 感知机
 
-## 章节
+第3章 k近邻法
 
-### 第2章 感知机(Perceptron)
+第4章 朴素贝叶斯
 
-[博客及代码](https://github.com/dlorg/ts_slm/tree/master/%E7%AC%AC2%E7%AB%A0%20%E6%84%9F%E7%9F%A5%E6%9C%BA(Perceptron))
+第5章 决策树
 
-### 第3章 k近邻法(KNearestNeighbors)
+第6章 逻辑斯谛回归
 
-[博客及代码](https://github.com/dlorg/ts_slm/tree/master/%E7%AC%AC3%E7%AB%A0k%E8%BF%91%E9%82%BB%E6%B3%95(KNearestNeighbors))
+第7章 支持向量机
+
+第8章 提升方法
+
+第9章 EM算法及其推广
+
+第10章 隐马尔可夫模型
+
+## 代码参考
+
+不参考别人的代码，我是不可能写出来的。这里有三个大神的仓库，也是实现《统计学习方法》
+
++ [fengdu78](https://github.com/fengdu78/lihang-code)
+
++ [wzyonggege](https://github.com/wzyonggege/statistical-learning-method)
+
++ [Dod-o](https://github.com/Dod-o/Statistical-Learning-Method_Code)
+
+## 最后
+
+看我这么认真写了注释，还把视频教程分享了出来。给个 **star** 吧！
