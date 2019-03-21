@@ -18,12 +18,19 @@ class MaxEntropy():
 
     def load_data(self, data):
         self.samples = deepcopy(data)
+
+    def init_args(self):
+        """
+        """
         self.N = len(self.samples)
         # 遍历整个样本
         for _l in self.samples:
             Y = _l[0]
             X = _l[1:]
+            # self.Y 是 set() 所以相同的 Y 不会加进去
             self.Y.add(Y)
+            # 保留键值对，这里的键值对是一个 x 对应 一个 y
+            # 而不是一个样本中的所有 x 对应一个 y
             for x in X:
                 if (x, Y) in self.num_XY:
                     self.num_XY[(x, Y)] += 1
@@ -34,6 +41,8 @@ class MaxEntropy():
         self.w = [0] * self.n
         self.last_w = [0] * self.n
         self.EP = [0] * self.n
+        # 公式 6.34 里面的 M
+        # 这里的 M 是最大特征数
         self.M = max([len(sample) for sample in self.samples])
         idx = 0
         # 计算期望
@@ -44,6 +53,10 @@ class MaxEntropy():
             idx += 1
 
     def compute_Zx(self, X):
+        """
+        计算这个样本的 Zx
+        :param X 是某一个样本的所有 x
+        """
         se = 0
         for y in self.Y:
             sw = 0
@@ -55,9 +68,14 @@ class MaxEntropy():
             se += math.exp(sw)
 
         return se
-        
 
     def compute_pyx(self, y, X):
+        """
+        计算P(y|x)
+        
+        公式 6.22
+        :param 这里的 X 是某一个样本的所有 x
+        """
         zx = self.compute_Zx(X)
         _a = []
         for x in X:
@@ -66,10 +84,15 @@ class MaxEntropy():
                 w = self.w[idx]
                 _a.append(w)
             t = math.exp(sum(_a))
-        
+
         return t/zx
 
-    def convergence(self):  # 判断是否全部收敛
+    def convergence(self):
+        """
+        判断是否全部收敛
+        
+        所有的 w 差值的绝对值都小于 EPS，即收敛
+        """
         for last, now in zip(self.lastw, self.w):
             if abs(last - now) >= self.EPS:
                 return False
@@ -87,12 +110,17 @@ class MaxEntropy():
             result[y] = pyx
         # print('result', result)
         return result
-    
+
     def compute_ep(self, idx):
+        """
+        计算模型期望
+        书上公式 83最上面
+        """
         x, y = self.w2XY[idx]
         ep = 0
         for sample in self.samples:
-            # P(y|x) 是一个 y 对应多个 x
+            # P(y|x) 是一个样本 y 对应这个样本的多个 x
+            # 而P(x) 是单个 x 的分布
             # 如果 x 不存在这个样本中。特征函数就会为 0。所以就 continue
             if x not in sample:
                 continue
@@ -102,6 +130,10 @@ class MaxEntropy():
         return ep
 
     def train(self, iterations=1000):
+        """
+        训练
+        书上算法 6.1
+        """
         for j in range(iterations):
             self.lastw = self.w[:]
             for i in range(self.n):
@@ -111,8 +143,6 @@ class MaxEntropy():
                 self.w[i] += self.M * math.log(ep/_ep)
             if self.convergence():
                 return
-        
-
 
 
 dataset = [['no', 'sunny', 'hot', 'high', 'FALSE'],
@@ -130,19 +160,15 @@ dataset = [['no', 'sunny', 'hot', 'high', 'FALSE'],
            ['yes', 'overcast', 'hot', 'normal', 'FALSE'],
            ['no', 'rainy', 'mild', 'high', 'TRUE']]
 
-
 def main():
     maxent = MaxEntropy()
-    x = ['rainy', 'mild', 'high', 'TRUE']
     maxent.load_data(dataset)
+    maxent.init_args()
     maxent.train()
+    x = ['rainy', 'mild', 'high', 'TRUE']
     # print('maxent', maxent.n)
     print('predict:', maxent.predict(x))
 
 
-
-
 if __name__ == "__main__":
     main()
-
-
